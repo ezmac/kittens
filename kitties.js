@@ -1,12 +1,12 @@
+loadKitties = function(){
 $(function(){
-  debugger;
   console.log("Kitties AI has loadeded.");
   setTimeout(function(){
     $('a:contains(Trade)').click();
     $('a:contains(Bonfire)').click();
-  },5000);
+  },5);
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
-  window.resTable = $($('.resTable').get(0));
+  resTable = $($('.resTable').get(0));
   window.catnipTd = $($(resTable).children('td').get(1));
   alertCatnup = function(){console.log("currennt catnip is " + Number(catnipTd.text()) )};
   window.maxResource = function(name){
@@ -139,6 +139,11 @@ $(function(){
       }
     }
   }, 1000);
+  function withinLimit(resource){
+    var limit=$("#limit_"+resource).val();
+    return (currentResource(resource)>=limit);
+
+  }
   setInterval(function(){
     autoCraft('iron','plate');
   }, 1000);
@@ -173,12 +178,11 @@ $(function(){
   }
   autohunters = setInterval(autoSendHunters,1000);
 
-  $("#craftContainer").append('<div id="limits"></div>');
-  $(gamePage.resPool.resources).each(function(index,resource){
-    if (resource.visible)
-    $("#limits").append('<label style="display:inline-block;width:90%">'+resource.name+': <input style="position:relative;right:0px;display:inline-block;" id="limit_'+resource.name+'" value="'+Math.floor(resource.maxValue*.9)+'" type="text"></label><br/>');
-  });
-
 
   //setInterval(function () {}, 1000);
 });
+}
+
+$.getScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js", function(){
+$.getScript("https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js", loadKitties);
+})
