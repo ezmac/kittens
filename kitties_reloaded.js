@@ -1,18 +1,11 @@
 // new yavascript file.  Yes, I like to pronounce it Yavascript.
-//
-
 // so I like what I know of functional programming (lodash) and I abuse jQuery.
-
-
-
-
+//
 //Start out by loading lodash.
 $.getScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js", function(){
   window.kittiesAI = KittiesAi();
   window.kittiesAI.init()
 })
-// so apparently peple can't read my retina display.
-// is that better?!?!?!?!
 
 function KittiesAi(){
   /** 
@@ -54,24 +47,24 @@ function KittiesAi(){
       'catnip':{
         min:3000000,
         max: 6000000
-        },
+      },
       'wood':{
         min:3000000,
         max: 6000000
-        },
+      },
       'minerals':{
         min:3000000,
         max: 6000000
-        },
+      },
       'coal':{
         min:100000,
         max: 200000
-        },
+      },
       'iron':{
         min:500000,
         max:1000000 
-        },
-      };
+      },
+    };
     return limits[resource];
 
   }
@@ -106,29 +99,27 @@ function KittiesAi(){
     timeouts[resource]=setInterval(function(){autoCraft(resource,createdResource)},ms);
   };
   this.init=function(){
-    //autocraft is set to craft if there are almost too many resources.
+    // watchResource is set to get min/max for resource and craft the other resource every N ms.
 
     watchResource('catnip','wood',100);
     watchResource('wood','beam',100);
     watchResource('minerals','slab',100);
     watchResource('coal','steel',100);
     watchResource('iron','plate',100);
-  
-  // we should also watch for star events...
-  var autoAstroEvent = function(){
-    //console.log($("#rightColumn"));
-    if (len =  $("#rightColumn button").length >0){
-      $("#rightColumn button").click();
-    }
-    if (len =  $("#rightColumn input").length >0){
-      $("#rightColumn input").click();
-    }
-  }
-  timeouts['astro']=setInterval(autoAstroEvent,500);
 
-  
+    // we should also watch for star events...
+    var autoAstroEvent = function(){
+      //console.log($("#rightColumn"));
+      if (len =  $("#rightColumn button").length >0){
+        $("#rightColumn button").click();
+      }
+      if (len =  $("#rightColumn input").length >0){
+        $("#rightColumn input").click();
+      }
+    }
+    timeouts['astro']=setInterval(autoAstroEvent,500);
+
+
   }
   return this;
 };
-//isn't it funny...  All these videos I play in the background always have half naked women in them..  nsfw, but https://www.youtube.com/watch?v=jK73UoH_aVo
-//and tmux doesn't adjust well to the resolution change.  The things I put up with...
