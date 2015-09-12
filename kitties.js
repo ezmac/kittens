@@ -1,3 +1,8 @@
+//So this script is designed to automate some of the more boring parts of the kittehs game.
+//it's not really an AI cause it isn't intelligent.
+//but it's starting to get crufty and cumbersome from all the additions over time.  I figured it's a good time to take away a bunch of cruft.
+//
+//This is the original.
 loadKitties = function(){
 $(function(){
   console.log("Kitties AI has loadeded.");
