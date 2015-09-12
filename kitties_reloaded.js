@@ -50,7 +50,29 @@ function KittiesAi(){
   /** getLimits will return an object with min and max properties for resources
   * */
   this.getLimits = function(resource){
-    return {min:3000000, max: 6000000};
+    limits = {
+      'catnip':{
+        min:3000000,
+        max: 6000000
+        },
+      'wood':{
+        min:3000000,
+        max: 6000000
+        },
+      'minerals':{
+        min:3000000,
+        max: 6000000
+        },
+      'coal':{
+        min:100000,
+        max: 200000
+        },
+      'iron':{
+        min:500000,
+        max:1000000 
+        },
+      };
+    return limits[resource];
 
   }
   this.withinLimits = function (resource){
@@ -87,6 +109,24 @@ function KittiesAi(){
     //autocraft is set to craft if there are almost too many resources.
 
     watchResource('catnip','wood',100);
+    watchResource('wood','beam',100);
+    watchResource('minerals','slab',100);
+    watchResource('coal','steel',100);
+    watchResource('iron','plate',100);
+  
+  // we should also watch for star events...
+  var autoAstroEvent = function(){
+    //console.log($("#rightColumn"));
+    if (len =  $("#rightColumn button").length >0){
+      $("#rightColumn button").click();
+    }
+    if (len =  $("#rightColumn input").length >0){
+      $("#rightColumn input").click();
+    }
+  }
+  timeouts['astro']=setInterval(autoAstroEvent,500);
+
+  
   }
   return this;
 };
