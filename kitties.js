@@ -1,17 +1,12 @@
-//So this script is designed to automate some of the more boring parts of the kittehs game.
-//it's not really an AI cause it isn't intelligent.
-//but it's starting to get crufty and cumbersome from all the additions over time.  I figured it's a good time to take away a bunch of cruft.
-//
-//This is the original.
 loadKitties = function(){
 $(function(){
   console.log("Kitties AI has loadeded.");
   setTimeout(function(){
     $('a:contains(Trade)').click();
     $('a:contains(Bonfire)').click();
-  },5);
+  },5000);
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
-  resTable = $($('.resTable').get(0));
+  window.resTable = $($('.resTable').get(0));
   window.catnipTd = $($(resTable).children('td').get(1));
   alertCatnup = function(){console.log("currennt catnip is " + Number(catnipTd.text()) )};
   window.maxResource = function(name){
@@ -77,9 +72,9 @@ $(function(){
 
   function autoCraft(resource,crafted_resource){
     //when getting number to be made, it actually works like it clicks that button that many times.  So eludium is 5, it will try to create eludium 5 times.
-    //if (withinPercentMax(resource,20)){
+    if (withinPercentMax(resource,20)){
     var limit=$("#limit_"+resource).val();
-    if (currentResource(resource)>limit){
+    //if (currentResource(resource)>limit){
       //console.log("creating "+crafted_resource);
       max = $($(".resTable tr td:contains("+crafted_resource+":)").last().parent().find('td').get(2)).text();
       if(max.indexOf("+")>-1){
@@ -134,7 +129,7 @@ $(function(){
   setInterval(function(){
     if(withinPercentMax('science',10))
     {
-      if(currentResource('compendium')>5000) {
+      if(currentResource('compendium')>10000) {
         console.log("blueprint");
         gamePage.craft('blueprint',1);
       }
@@ -183,11 +178,15 @@ $(function(){
   }
   autohunters = setInterval(autoSendHunters,1000);
 
+  $("#craftContainer").append('<div id="limits"></div>');
+  $(gamePage.resPool.resources).each(function(index,resource){
+    if (!(resource.visible==false))
+    $("#limits").append('<label style="display:inline-block;width:90%">'+resource.name+': <input style="position:relative;right:0px;display:inline-block;" id="limit_'+resource.name+'" value="'+Math.floor(resource.maxValue*.9)+'" type="text"></label><br/>');
+  });
+
 
   //setInterval(function () {}, 1000);
 });
 }
 
-$.getScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js", function(){
-$.getScript("https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js", loadKitties);
-})
+$.getScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js", loadKitties);
