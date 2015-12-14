@@ -19,7 +19,7 @@ $(function(){
   }
 
   window.kParse = function(input){
-    kParser = /([\d]*)\.?([\d]*)(K|M)/i;
+    kParser = /([\d]*)\.?([\d]*)(K|M|G)/i;
     matches = input.match(kParser);
     if (null === matches) return parseInt(input);
     if(matches[2].length)
@@ -30,6 +30,8 @@ $(function(){
       multiplier=1000;
     if (matches[3]=='M')
       multiplier=1000000;
+    if (matches[3]=='G')
+      multiplier=1000000000;
     return parseInt(parseInt(matches[1]*multiplier)+(hundreds*(multiplier/100)));
   }
   //currentCatnip = function(){ return Number(catnipTd.text()) };
@@ -129,11 +131,11 @@ $(function(){
   setInterval(function(){
     if(withinPercentMax('science',10))
     {
-      if(currentResource('compendium')>10000) {
+      if(currentResource('compendium')>18000) {
         console.log("blueprint");
         gamePage.craft('blueprint',1);
       }
-      else if(currentResource('manuscript')>200) {
+      else if(currentResource('manuscript')>5000) {
         console.log("Compendium");
         gamePage.craft('compedium',1);
       }
@@ -163,9 +165,15 @@ $(function(){
       autoCraft('coal','steel');
     }
   }
+  function autoCreateKerosene(){
+    if(withinPercentMax('oil',10)){
+      autoCraft('oil','kerosene');
+    }
+  }
   autoBeam = setInterval(autoCreateBeam,200);
   autoSlab = setInterval(autoCreateSlab,500);
   autoSteel = setInterval(autoCreateSteel,200);
+  autoKerosene= setInterval(autoCreateKerosene,200);
 
   autoAstro = setInterval(autoAstroEvent,500);
   /*
@@ -176,7 +184,7 @@ $(function(){
       $("#fastHuntContainer a").click();
     }
   }
-  autohunters = setInterval(autoSendHunters,1000);
+  autohunters = setInterval(autoSendHunters,100);
 
   $("#craftContainer").append('<div id="limits"></div>');
   $(gamePage.resPool.resources).each(function(index,resource){
