@@ -15,5 +15,5 @@ Problem being it got hard to manage and every time you wanted to reset or change
   //there's a bug with trade. before loading the script, activate the trade tab.
 
   // paste something like this in console.  Sorry github.
-  $('body').append("&lt;script src='https://raw.githubusercontent.com/ezmac/kittens/master/kitties.js'>");
+  $('body').append("<script src='https://raw.githubusercontent.com/ezmac/kittens/master/kitties.js'>");
   ```
