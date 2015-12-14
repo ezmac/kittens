@@ -9,8 +9,11 @@ At current point, I've got a messy but working script.  Here's the demo.
 
 Problem being it got hard to manage and every time you wanted to reset or change limits of a resource, you had to reload the page and be able to access the source.  not good if you're sharing it with someone.
 
+### How to
 
+  ```
   //there's a bug with trade. before loading the script, activate the trade tab.
 
   // paste something like this in console.  Sorry github.
   $('body').append("&lt;script src='https://raw.githubusercontent.com/ezmac/kittens/master/kitties.js'>");
+  ```
