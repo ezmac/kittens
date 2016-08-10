@@ -14,6 +14,10 @@ Problem being it got hard to manage and every time you wanted to reset or change
   ```
   //there's a bug with trade. before loading the script, activate the trade tab.
 
-  // paste something like this in console.  Sorry github.
-  $('body').append("<script src='https://raw.githubusercontent.com/ezmac/kittens/master/kitties.js'>");
+var s = document.createElement("script");
+s.type = "text/javascript";
+s.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+document.body.appendChild(s)
+$('body').append("<script src=\"http://unstandardmethod.com/kitties.js\">")
+
   ```
