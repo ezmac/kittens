@@ -13,13 +13,6 @@ l.src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"
 document.body.appendChild(l);
 console.log("kittehs ai v2.0 haz loads");
 
-//$.getScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js", loadKitties);
-
-
-//there's a kittens object.  it has resources, timeouts, etc,
-
-//
-
 // a resource is a standard unit that accumulates with time.
 function Resource(resource)
 {
@@ -91,9 +84,6 @@ Resource.prototype = {
       //debugger;
       if(max.indexOf("+")>-1){
         num=(this.kParse(max.substr(1)))/2;
-        if('catnip'==resource){
-          console.log(num);
-        }
       }
       else
         num=1;
@@ -110,27 +100,19 @@ function StandardResource(){
 
 StandardResource.prototype = Object.create(Resource.prototype);
 StandardResource.prototype.upgrade = function(){
-  console.log("checking upgrade");
   if(this.canUpgrade())
   {
     this.autoCraft(this.name, this.crafted_resource);
   }
 }
 function ConditionalResource(){
-  return Resource.apply(this,arguments);
+  return StandardResource.apply(this,arguments);
 };
 
-ConditionalResource.prototype = Object.create(Resource.prototype);
-ConditionalResource.prototype.upgrade = function(){
-  console.log("checking upgrade");
-  if(this.canUpgrade())
-  {
-    this.autoCraft(this.name, this.crafted_resource);
-  }
-}
+ConditionalResource.prototype = Object.create(StandardResource.prototype);
 ConditionalResource.prototype.canUpgrade = function(){
   console.log("checking conditions for upgrade");
-  if(this.conditions.length == 0){
+  if((!this.conditions) || this.conditions.length == 0){
     console.error('No conditions given');
     return false;
   }
@@ -140,6 +122,15 @@ ConditionalResource.prototype.canUpgrade = function(){
   return boundConditions.reduce(function(previous,condition){
     return condition() && previous;
   },true);
+}
+function CustomActionConditionalResource(){
+  return ConditionalResource.apply(this,arguments);
+}
+CustomActionConditionalResource.prototype = Object.create(ConditionalResource.prototype);
+CustomActionConditionalResource.prototype.upgrade = function(){
+  if(this.canUpgrade()){
+    return this.action();
+  }
 }
 
 function Hunting(){
@@ -152,6 +143,15 @@ Hunting.prototype.upgrade = function(){
   }
 }
 
+function Faith(){
+  return Resource.apply(this,arguments);
+}
+Faith.prototype = Object.create(Resource.prototype);
+Faith.prototype.upgrade = function(){
+  if(this.canUpgrade()){
+      gamePage.religion.praise();
+  }
+}
 
 
 function MinimumResource(){
@@ -203,9 +203,23 @@ MinimumResource.prototype.canUpgrade = function(){
         function(){return this.withinPercentMax('iron',10);},
       ]
     }));
-    this.resources.push(new Hunting({
+    this.resources.push(new CustomActionConditionalResource({
       name: 'catpower',
-      crafted_resource:"furs"
+      conditions:[
+        function(){return this.withinPercentMax(this.name,10);},
+      ],
+      action:function(){
+        $("#fastHuntContainer a").click();
+      }
+    }));
+    this.resources.push(new ConditionalResource({
+      name: 'faith',
+      conditions:[
+        function(){return this.withinPercentMax(this.name,10);},
+      ],
+      action: function(){
+        gamePage.religion.praise();
+      }
     }));
     this.resources.push(new MinimumResource({
       name: 'furs',
@@ -222,6 +236,15 @@ MinimumResource.prototype.canUpgrade = function(){
       ]
     }));
 
+    this.resources.push(new ConditionalResource({
+      name: 'manuscript',
+      crafted_resource:"compedium",
+      frequency: 2500,
+      conditions:[
+        function(){return this.current('manuscript')>100;},
+        function(){return this.withinPercentMax('science',1);}
+      ]
+    }));
     this.resources.forEach(function(r){
       return r.initialize();
     });
@@ -236,9 +259,8 @@ MinimumResource.prototype.canUpgrade = function(){
 
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
   window.autoTrade = function (){
-    if (Resource.prototype.withinPercentMax('gold',10)){
+    if (Resource.prototype.withinPercentMax('gold',1)){
       if (Resource.prototype.withinPercentMax('catnip',90)) {
-        console.log("crafting wood");
         gamePage.craft('wood',100);
       }
       else if(gamePage.diplomacyTab.racePanels[1].tradeBtn.hasResources()){
