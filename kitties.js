@@ -114,10 +114,10 @@ $(function(){
   autoTradeInterval = setInterval(autoTrade,200);
   setInterval(function(){
     if (withinPercentMax('culture',10)){
-      if (currentResource('furs')>300) {
+      if (currentResource('furs')>3000) {
         gamePage.craft('parchment',1);
       }
-      if (currentResource('parchment')>500){
+      if (currentResource('parchment')>50){
         gamePage.craft('manuscript',1);
       }
     }
@@ -188,12 +188,15 @@ $(function(){
   }
   autohunters = setInterval(autoSendHunters,100);
 
-  $("#craftContainer").append('<div id="limits"></div>');
+  window.appendLimits=function(){
+  $("#craftsContainer").append('<div id="limits"></div>');
   $(gamePage.resPool.resources).each(function(index,resource){
     if (!(resource.visible==false))
     $("#limits").append('<label style="display:inline-block;width:90%">'+resource.name+': <input style="position:relative;right:0px;display:inline-block;" id="limit_'+resource.name+'" value="'+Math.floor(resource.maxValue*.9)+'" type="text"></label><br/>');
   });
+  $('#limits').css("width:100%");
 
+  }
 
   //setInterval(function () {}, 1000);
 });
