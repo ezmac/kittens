@@ -23,8 +23,8 @@ Resource.prototype = {
   max: function(name){
   
     name=(typeof name == 'undefined') ? this.name: name;
-    if (name==this.name)
-      return gamePage.resPool.get(this.name).maxValue;
+    if (gamePage.resPool.get(name))
+      return gamePage.resPool.get(name).maxValue;
     max = $($(".resTable tr td:contains("+name+":)").parent().find('td').get(2)).text();
     max = max.replace('/','');
     
@@ -37,8 +37,8 @@ Resource.prototype = {
   },
   current: function(name){
     name=(typeof name == 'undefined') ? this.name: name;
-    if (name==this.name)
-      return gamePage.resPool.get(this.name).value;
+    if (gamePage.resPool.get(name))
+      return gamePage.resPool.get(name).value;
     return this.kParse($($(".resTable tr td:contains("+name+":)").parent().find('td').get(1)).text());
   },
   // the dumbest way of finding limit/current/anything from the left table.
