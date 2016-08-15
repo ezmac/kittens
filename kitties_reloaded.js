@@ -8,7 +8,7 @@ document.body.appendChild(s);
 
 console.log("kittehs ai v2.0 haz loads");
 
-// a resource is a standard unit that accumulates with time.
+// a resource is a standard unit that is listed on the left side.  
 function Resource(resource)
 {
   var r= Object.keys(resource).forEach(function(r){
@@ -17,6 +17,7 @@ function Resource(resource)
   return this;
 }
 
+// a resource is a standard interface for a thing on the left side of the game.  They upgrade, have a name, and can tell if they can upgrade.  Used as a base "class" or as the architype in prototypical inheritance.  I guess architype is the correct work.  Check out how it's used following...
 Resource.prototype = {
   max: function(name){
     name=(typeof name == 'undefined') ? this.name: name;
@@ -34,6 +35,7 @@ Resource.prototype = {
     name=(typeof name == 'undefined') ? this.name: name;
     return this.kParse($($(".resTable tr td:contains("+name+":)").parent().find('td').get(1)).text());
   },
+  // the dumbest way of finding limit/current/anything from the left table.
   kParse: function(input){
     kParser = /([\d]*)\.?([\d]*)(K|M|G)/i;
     matches = input.match(kParser);
@@ -53,6 +55,7 @@ Resource.prototype = {
   canUpgrade(){
     return this.withinPercentMax(this.name, this.percent);
   },
+  // Read name as within10PercentOfMaximumResource if percent is 10
   withinPercentMax: function(name,percent){
     name=(typeof name == 'undefined') ? this.name: name;
     percent=(typeof percent == 'undefined') ? this.percent: percent;
@@ -70,6 +73,8 @@ Resource.prototype = {
   },
   percent: 10,
   frequency: 2000,
+  // find a reasonable guess for how many to craft by reading the workshop table directly
+  // lol jquery
   autoCraft: function (resource, crafted_resource){
       max = $($(".resTable tr td:contains("+crafted_resource+":)").last().parent().find('td').get(2)).text();
       //debugger;
@@ -85,6 +90,15 @@ Resource.prototype = {
     }
 }
 
+// http://stackoverflow.com/questions/4908378/javascript-array-of-functions
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
+//
+// no lulz, real documentation. ^^
+// it's good stuff.
+//
+//a standard resource is one where you only need name and created_resource.  it'll trigger every 2 seconds and convert when within 10% of max;  you can override any property when you instanciate it.
 function StandardResource(){
   return Resource.apply(this,arguments);
 };
@@ -96,6 +110,8 @@ StandardResource.prototype.upgrade = function(){
     this.autoCraft(this.name, this.crafted_resource);
   }
 }
+
+//  checks conditions given instead of being % based
 function ConditionalResource(){
   return StandardResource.apply(this,arguments);
 };
@@ -115,6 +131,7 @@ ConditionalResource.prototype.canUpgrade = function(){
 }
 
 
+// like ConditionalResource but with a custom convert action.
 function CustomActionConditionalResource(){
   return ConditionalResource.apply(this,arguments);
 }
@@ -126,6 +143,7 @@ CustomActionConditionalResource.prototype.upgrade = function(){
 }
 
 
+// maintains a minimum while converting any aboce the minimum
 function MinimumResource(){
   return StandardResource.apply(this,arguments);
 }
@@ -135,11 +153,10 @@ MinimumResource.prototype.canUpgrade = function(){
     return true;
   }
 }
+
+
+// the kittens object itself.  This is where you'd adjust parameters if you don't want to customize functions.
   function Kittens(resourcesList) {
-    //this.resourcesList = resources;
-    /*this.resourcesList.forEach(function(resource){
-      }
-      */
     this.resources = [];
     this.resources.push(new StandardResource({
       name: 'catnip',
@@ -180,7 +197,7 @@ MinimumResource.prototype.canUpgrade = function(){
         $("#fastHuntContainer a").click();
       }
     }));
-    this.resources.push(new ConditionalResource({
+    this.resources.push(new CustomActionConditionalResource({
       name: 'faith',
       conditions:[
         function(){return this.withinPercentMax(this.name,10);},
@@ -216,15 +233,20 @@ MinimumResource.prototype.canUpgrade = function(){
     this.resources.forEach(function(r){
       return r.initialize();
     });
-    //this.edges = [];
   }
+    window.k = new Kittens();
 
+//this was never used.
+/*
     Kittens.prototype = {
       addResources: function(v){
         this.resources.push(v);
       }
     };
 
+    */
+//this was copy pasta'd from a previous version
+//  it was hard to convert and I got lazy.
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
   window.autoTrade = function (){
     if (Resource.prototype.withinPercentMax('gold',1)){
@@ -253,6 +275,5 @@ MinimumResource.prototype.canUpgrade = function(){
     }
   }
   autoAstro = setInterval(autoAstroEvent,2000);
-    window.k = new Kittens();
     // g is an object with own properties 'vertices' and 'edges'.
     // g.[[Prototype]] is the value of Graph.prototype when new Graph() is executed.
