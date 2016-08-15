@@ -1,4 +1,3 @@
-
 /*
  *var s = document.createElement('script');s.src="http://localhost:8000/kitties_reloaded.js";s.type="text/javascript";document.body.appendChild(s);
  */
@@ -7,10 +6,6 @@ s.type = "text/javascript";
 s.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
 document.body.appendChild(s);
 
-var l = document.createElement("script");
-l.type = "text/javascript";
-l.src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"
-document.body.appendChild(l);
 console.log("kittehs ai v2.0 haz loads");
 
 // a resource is a standard unit that accumulates with time.
@@ -24,8 +19,7 @@ function Resource(resource)
 
 Resource.prototype = {
   max: function(name){
-    if (typeof name == 'undefined') 
-      name=this.name;
+    name=(typeof name == 'undefined') ? this.name: name;
     max = $($(".resTable tr td:contains("+name+":)").parent().find('td').get(2)).text();
     max = max.replace('/','');
     return this.kParse(max);
@@ -37,8 +31,7 @@ Resource.prototype = {
     return this.name;
   },
   current: function(name){
-    if (typeof name == 'undefined') 
-      name=this.name;
+    name=(typeof name == 'undefined') ? this.name: name;
     return this.kParse($($(".resTable tr td:contains("+name+":)").parent().find('td').get(1)).text());
   },
   kParse: function(input){
@@ -58,13 +51,11 @@ Resource.prototype = {
     return parseInt(parseInt(matches[1]*multiplier)+(hundreds*(multiplier/100)));
   },
   canUpgrade(){
-    return this.withinPercentMax(this.name, this.percentage);
+    return this.withinPercentMax(this.name, this.percent);
   },
   withinPercentMax: function(name,percent){
-    if (typeof name == 'undefined') 
-      name=this.name;
-    if (typeof percent == 'undefined') 
-      percent=this.percentage;
+    name=(typeof name == 'undefined') ? this.name: name;
+    percent=(typeof percent == 'undefined') ? this.percent: percent;
 
     if (0==this.max(name)) return false;
     threshold = this.max(name) - (this.max(name) * (percent/100));
@@ -77,7 +68,7 @@ Resource.prototype = {
     timeoutFunction = this.upgrade.bind(this);
     this.timeout = setInterval(timeoutFunction,this.frequency);
   },
-  percentage: 10,
+  percent: 10,
   frequency: 2000,
   autoCraft: function (resource, crafted_resource){
       max = $($(".resTable tr td:contains("+crafted_resource+":)").last().parent().find('td').get(2)).text();
@@ -111,7 +102,6 @@ function ConditionalResource(){
 
 ConditionalResource.prototype = Object.create(StandardResource.prototype);
 ConditionalResource.prototype.canUpgrade = function(){
-  console.log("checking conditions for upgrade");
   if((!this.conditions) || this.conditions.length == 0){
     console.error('No conditions given');
     return false;
@@ -123,6 +113,8 @@ ConditionalResource.prototype.canUpgrade = function(){
     return condition() && previous;
   },true);
 }
+
+
 function CustomActionConditionalResource(){
   return ConditionalResource.apply(this,arguments);
 }
@@ -130,26 +122,6 @@ CustomActionConditionalResource.prototype = Object.create(ConditionalResource.pr
 CustomActionConditionalResource.prototype.upgrade = function(){
   if(this.canUpgrade()){
     return this.action();
-  }
-}
-
-function Hunting(){
-  return Resource.apply(this,arguments);
-}
-Hunting.prototype = Object.create(Resource.prototype);
-Hunting.prototype.upgrade = function(){
-  if(this.canUpgrade()){
-    $("#fastHuntContainer a").click();
-  }
-}
-
-function Faith(){
-  return Resource.apply(this,arguments);
-}
-Faith.prototype = Object.create(Resource.prototype);
-Faith.prototype.upgrade = function(){
-  if(this.canUpgrade()){
-      gamePage.religion.praise();
   }
 }
 
@@ -169,14 +141,10 @@ MinimumResource.prototype.canUpgrade = function(){
       }
       */
     this.resources = [];
-    this.resources.push(new ConditionalResource({
+    this.resources.push(new StandardResource({
       name: 'catnip',
       crafted_resource:"wood",
       frequency: 250,
-      conditions:[
-        function(){return this.withinPercentMax('catnip',10);},
-        function(){return true;}
-      ]
     }));
     this.resources.push(new StandardResource({
       name: 'wood',
