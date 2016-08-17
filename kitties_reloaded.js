@@ -19,15 +19,11 @@ function Resource(resource)
 
 // a resource is a standard interface for a thing on the left side of the game.  They upgrade, have a name, and can tell if they can upgrade.  Used as a base "class" or as the architype in prototypical inheritance.  I guess architype is the correct work.  Check out how it's used following...
 Resource.prototype = {
-  
   max: function(name){
-  
     name=(typeof name == 'undefined') ? this.name: name;
-    if (gamePage.resPool.get(name))
-      return gamePage.resPool.get(name).maxValue;
     max = $($(".resTable tr td:contains("+name+":)").parent().find('td').get(2)).text();
     max = max.replace('/','');
-    
+    return this.kParse(max);
   },
   upgrade: function(){
     console.error("this should be overridden");
@@ -37,8 +33,6 @@ Resource.prototype = {
   },
   current: function(name){
     name=(typeof name == 'undefined') ? this.name: name;
-    if (gamePage.resPool.get(name))
-      return gamePage.resPool.get(name).value;
     return this.kParse($($(".resTable tr td:contains("+name+":)").parent().find('td').get(1)).text());
   },
   // the dumbest way of finding limit/current/anything from the left table.
@@ -75,11 +69,10 @@ Resource.prototype = {
   },
   initialize: function(){
     timeoutFunction = this.upgrade.bind(this);
-    this.object = gamePage.resPool.get(this.name);
     this.timeout = setInterval(timeoutFunction,this.frequency);
   },
   percent: 10,
-  frequency: 2500,
+  frequency: 2000,
   // find a reasonable guess for how many to craft by reading the workshop table directly
   // lol jquery
   autoCraft: function (resource, crafted_resource){
@@ -168,7 +161,7 @@ MinimumResource.prototype.canUpgrade = function(){
     this.resources.push(new StandardResource({
       name: 'catnip',
       crafted_resource:"wood",
-      frequency: 300,
+      frequency: 250,
     }));
     this.resources.push(new StandardResource({
       name: 'wood',
@@ -198,7 +191,7 @@ MinimumResource.prototype.canUpgrade = function(){
     this.resources.push(new CustomActionConditionalResource({
       name: 'catpower',
       conditions:[
-        function(){return this.withinPercentMax(this.name,10);},
+        function(){return this.withinPercentMax(this.name,1);},
       ],
       action:function(){
         $("#fastHuntContainer a").click();
@@ -273,7 +266,7 @@ MinimumResource.prototype.canUpgrade = function(){
       }
     }
   }
-  autoTradeInterval = setInterval(autoTrade,200);
+  //autoTradeInterval = setInterval(autoTrade,200);
 
   var autoAstroEvent = function(){
     //console.log($("#rightColumn"));
