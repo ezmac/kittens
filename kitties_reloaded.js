@@ -19,6 +19,10 @@ function Resource(resource)
 
 // a resource is a standard interface for a thing on the left side of the game.  They upgrade, have a name, and can tell if they can upgrade.  Used as a base "class" or as the architype in prototypical inheritance.  I guess architype is the correct work.  Check out how it's used following...
 Resource.prototype = {
+  enabled:true,
+  toggleEnabled: function(){
+      this.enabled=!this.enabled;
+  },
   max: function(name){
     name=(typeof name == 'undefined') ? this.name: name;
     max = $($(".resTable tr td:contains("+name+":)").parent().find('td').get(2)).text();
@@ -53,7 +57,7 @@ Resource.prototype = {
     return parseInt(parseInt(matches[1]*multiplier)+(hundreds*(multiplier/100)));
   },
   canUpgrade(){
-    return this.withinPercentMax(this.name, this.percent);
+    return this.withinPercentMax(this.name, this.percent) && this.enabled;
   },
   // Read name as within10PercentOfMaximumResource if percent is 10
   withinPercentMax: function(name,percent){
@@ -105,7 +109,8 @@ function StandardResource(){
 
 StandardResource.prototype = Object.create(Resource.prototype);
 StandardResource.prototype.upgrade = function(){
-  if(this.canUpgrade())
+
+  if(this.enabled && this.canUpgrade())
   {
     this.autoCraft(this.name, this.crafted_resource);
   }
@@ -118,7 +123,9 @@ function ConditionalResource(){
 
 ConditionalResource.prototype = Object.create(StandardResource.prototype);
 ConditionalResource.prototype.canUpgrade = function(){
-  if((!this.conditions) || this.conditions.length == 0){
+  if (!this.enabled) return false;
+
+  if((!this.conditions) || this.conditions.length == 0 ){
     console.error('No conditions given');
     return false;
   }
@@ -137,7 +144,7 @@ function CustomActionConditionalResource(){
 }
 CustomActionConditionalResource.prototype = Object.create(ConditionalResource.prototype);
 CustomActionConditionalResource.prototype.upgrade = function(){
-  if(this.canUpgrade()){
+  if(this.enabled && this.canUpgrade()){
     return this.action();
   }
 }
@@ -149,7 +156,7 @@ function MinimumResource(){
 }
 MinimumResource.prototype = Object.create(StandardResource.prototype);
 MinimumResource.prototype.canUpgrade = function(){
-  if (this.current(this.name)>this.minimum){
+  if (this.current(this.name)>this.minimum && this.enabled){
     return true;
   }
 }
@@ -275,5 +282,26 @@ MinimumResource.prototype.canUpgrade = function(){
     }
   }
   autoAstro = setInterval(autoAstroEvent,2000);
+
+
+  // Teh interface  this is not clean right now.
+$('body').append("<div id=\"kittehAI\" style=\"width:100%;position:fixed;bottom:0px;height:100px; \">")
+
+window.k.resources.forEach(function(r){
+  var resource = $("<div class='resource'><label>" + r.name + "</label><input checked data-property='enabled' type='checkbox'/></div>");
+  boundFunction = r.toggleEnabled.bind(r);
+  resource.find('[data-property=\'enabled\']').on('click', boundFunction);
+  $("#kittehAI").append(resource);
+});
+
+
+
+
+
+//
+//
+//
+//
+//
     // g is an object with own properties 'vertices' and 'edges'.
     // g.[[Prototype]] is the value of Graph.prototype when new Graph() is executed.
