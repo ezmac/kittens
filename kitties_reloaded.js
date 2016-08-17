@@ -283,7 +283,7 @@ MinimumResource.prototype.canUpgrade = function(){
       }
     }
   }
-  //autoTradeInterval = setInterval(autoTrade,200);
+  autoTradeInterval = setInterval(autoTrade,200);
 
   var autoAstroEvent = function(){
     //console.log($("#rightColumn"));
