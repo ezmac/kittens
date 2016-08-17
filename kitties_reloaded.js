@@ -89,9 +89,18 @@ Resource.prototype = {
         num=1;
       if (resource =='unobtainium')
         num=1;
-
       gamePage.craft(crafted_resource ,num);
-    }
+    },
+  getControls(){
+    // danger function..  needs to be overridden
+    var controls = $("<div class='resource-control'><input value='"+this.percent+"'> %</div>");
+    boundFunction = function(t){
+        this.percent = t.target.value;
+
+      }.bind(this);
+      controls.find('input').on('change',boundFunction);
+      return controls;
+  }
 }
 
 // http://stackoverflow.com/questions/4908378/javascript-array-of-functions
@@ -135,6 +144,16 @@ ConditionalResource.prototype.canUpgrade = function(){
   return boundConditions.reduce(function(previous,condition){
     return condition() && previous;
   },true);
+}
+function CustomActionStandardResource(){
+  return StandardResource.apply(this,arguments);
+
+}
+CustomActionStandardResource.prototype = Object.create(StandardResource.prototype);
+CustomActionStandardResource.prototype.upgrade = function(){
+  if(this.enabled && this.canUpgrade()){
+    return this.action();
+  }
 }
 
 
@@ -187,28 +206,19 @@ MinimumResource.prototype.canUpgrade = function(){
         function(){return this.withinPercentMax('coal',20);}
       ]
     }));
-    this.resources.push(new ConditionalResource({
+    this.resources.push(new StandardResource({
       name: 'iron',
       crafted_resource:"plate",
       frequency: 2500,
-      conditions:[
-        function(){return this.withinPercentMax('iron',10);},
-      ]
     }));
-    this.resources.push(new CustomActionConditionalResource({
+    this.resources.push(new CustomActionStandardResource({
       name: 'catpower',
-      conditions:[
-        function(){return this.withinPercentMax(this.name,1);},
-      ],
       action:function(){
         $("#fastHuntContainer a").click();
       }
     }));
-    this.resources.push(new CustomActionConditionalResource({
+    this.resources.push(new CustomActionStandardResource({
       name: 'faith',
-      conditions:[
-        function(){return this.withinPercentMax(this.name,10);},
-      ],
       action: function(){
         gamePage.religion.praise();
       }
@@ -285,14 +295,22 @@ MinimumResource.prototype.canUpgrade = function(){
 
 
   // Teh interface  this is not clean right now.
-$('body').append("<div id=\"kittehAI\" style=\"width:100%;position:fixed;bottom:0px;height:100px; \">")
+$('body').append("<div id=\"kittehAI\" style=\"width:100%;position:fixed;bottom:0px;height:150px; \">")
 
 window.k.resources.forEach(function(r){
-  var resource = $("<div class='resource'><label>" + r.name + "</label><input checked data-property='enabled' type='checkbox'/></div>");
+  var resource = $("<div class='resource'><label>" + r.name + "<input checked data-property='enabled' type='checkbox'/></label></div>");
   boundFunction = r.toggleEnabled.bind(r);
   resource.find('[data-property=\'enabled\']').on('click', boundFunction);
+  resource.append(r.getControls());
   $("#kittehAI").append(resource);
 });
+$('body').append("<style> " +
+    ".resource {width:22%;display:inline-block;background-color:#ddd;padding-right:15px;}" +
+    ".resource label { clear:none;width:30%;float:left}"+
+    ".resource .resource-control {float:right; width:20%}" + 
+    "#game {margin-bottom:150px;}"
+    );
+
 
 
 
