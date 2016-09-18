@@ -202,8 +202,17 @@ MinimumResource.prototype.canUpgrade = function(){
       crafted_resource:"steel",
       frequency: 2500,
       conditions:[
-        function(){return this.withinPercentMax('iron',10);},
-        function(){return this.withinPercentMax('coal',20);}
+        function(){return this.withinPercentMax('iron',50);},
+        function(){return this.withinPercentMax('coal',10);}
+      ]
+    }));
+    this.resources.push(new ConditionalResource({
+      name: 'titanium',
+      crafted_resource:"alloy",
+      frequency: 2500,
+      conditions:[
+        function(){return this.withinPercentMax('titanium',5);},
+        function(){return this.current('steel')> 1000;}
       ]
     }));
     this.resources.push(new StandardResource({
@@ -231,10 +240,10 @@ MinimumResource.prototype.canUpgrade = function(){
     this.resources.push(new ConditionalResource({
       name: 'parchment',
       crafted_resource:"manuscript",
-      frequency: 2500,
+      frequency: 1000,
       conditions:[
         function(){return this.current('parchment')>300;},
-        function(){return this.withinPercentMax('culture',10);}
+        function(){return this.withinPercentMax('culture',60);}
       ]
     }));
 
