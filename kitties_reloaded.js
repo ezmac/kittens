@@ -23,6 +23,7 @@ Resource.prototype = {
   toggleEnabled: function(){
       this.enabled=!this.enabled;
   },
+  limitName:'%',
   max: function(name){
     name=(typeof name == 'undefined') ? this.name: name;
     max = $($(".resTable tr td:contains("+name+":)").parent().find('td').get(2)).text();
@@ -75,7 +76,7 @@ Resource.prototype = {
     timeoutFunction = this.upgrade.bind(this);
     this.timeout = setInterval(timeoutFunction,this.frequency);
   },
-  percent: 10,
+  limit: 10,
   frequency: 2000,
   // find a reasonable guess for how many to craft by reading the workshop table directly
   // lol jquery
@@ -93,9 +94,9 @@ Resource.prototype = {
     },
   getControls(){
     // danger function..  needs to be overridden
-    var controls = $("<div class='resource-control'><input value='"+this.percent+"'> %</div>");
+    var controls = $("<div class='resource-control'><input style='float:left;width:50px;' value='"+this.limit+"'> "+ this.limitName+ "</div>");
     boundFunction = function(t){
-        this.percent = t.target.value;
+        this.limit = t.target.value;
 
       }.bind(this);
       controls.find('input').on('change',boundFunction);
@@ -206,15 +207,6 @@ MinimumResource.prototype.canUpgrade = function(){
         function(){return this.withinPercentMax('coal',10);}
       ]
     }));
-    this.resources.push(new ConditionalResource({
-      name: 'titanium',
-      crafted_resource:"alloy",
-      frequency: 2500,
-      conditions:[
-        function(){return this.withinPercentMax('titanium',5);},
-        function(){return this.current('steel')> 1000;}
-      ]
-    }));
     this.resources.push(new StandardResource({
       name: 'iron',
       crafted_resource:"plate",
@@ -241,8 +233,10 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'parchment',
       crafted_resource:"manuscript",
       frequency: 1000,
+      limit: 100,
+      limitName: 'parchment kept',
       conditions:[
-        function(){return this.current('parchment')>300;},
+        function(){return this.current('parchment')>this.limit;},
         function(){return this.withinPercentMax('culture',60);}
       ]
     }));
@@ -251,9 +245,33 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'manuscript',
       crafted_resource:"compedium",
       frequency: 2500,
+      limit:100,
+      limitName: 'manuscripts kept',
       conditions:[
-        function(){return this.current('manuscript')>100;},
+        function(){return this.current('manuscript')> this.limit ;},
         function(){return this.withinPercentMax('science',1);}
+      ]
+    }));
+    this.resources.push(new ConditionalResource({
+      name: 'compedium',
+      crafted_resource:"blueprint",
+      frequency: 2500,
+      limit:2000,
+      limitName: 'compendium kept',
+      conditions:[
+        function(){return this.current('compendium')> this.limit ;},
+        function(){return this.withinPercentMax('science',1);}
+      ]
+    }));
+    this.resources.push(new ConditionalResource({
+      name: 'titanium',
+      crafted_resource:"alloy",
+      frequency: 2500,
+      limit:3000,
+      limitName: 'steel kept',
+      conditions:[
+        function(){return this.withinPercentMax('titanium',5);},
+        function(){return this.current('steel')> this.limit ;}
       ]
     }));
     this.resources.forEach(function(r){
@@ -304,10 +322,10 @@ MinimumResource.prototype.canUpgrade = function(){
 
 
   // Teh interface  this is not clean right now.
-$('body').append("<div id=\"kittehAI\" style=\"width:100%;position:fixed;bottom:0px;height:150px; \">")
+$('body').append("<div id=\"kittehAI\" style=\"width:100%;position:fixed;bottom:0px;height:200px; \">")
 
 window.k.resources.forEach(function(r){
-  var resource = $("<div class='resource'><label>" + r.name + "<input checked data-property='enabled' type='checkbox'/></label></div>");
+  var resource = $("<div class='resource'><label>" + r.name + "</label><input checked data-property='enabled' type='checkbox'/></div>");
   boundFunction = r.toggleEnabled.bind(r);
   resource.find('[data-property=\'enabled\']').on('click', boundFunction);
   resource.append(r.getControls());
@@ -317,7 +335,8 @@ $('body').append("<style> " +
     ".resource {width:22%;display:inline-block;background-color:#ddd;padding-right:15px;}" +
     ".resource label { clear:none;width:30%;float:left}"+
     ".resource .resource-control {float:right; width:20%}" + 
-    "#game {margin-bottom:150px;}"
+    "#game {margin-bottom:200px;}"+
+    ".resource-control{ min-width:200px;}"
     );
 
 
