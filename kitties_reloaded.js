@@ -58,7 +58,7 @@ Resource.prototype = {
     return parseInt(parseInt(matches[1]*multiplier)+(hundreds*(multiplier/100)));
   },
   canUpgrade(){
-    return this.withinPercentMax(this.name, this.percent) && this.enabled;
+    return this.withinPercentMax(this.name, this.limit) && this.enabled;
   },
   // Read name as within10PercentOfMaximumResource if percent is 10
   withinPercentMax: function(name,percent){
