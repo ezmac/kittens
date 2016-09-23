@@ -300,13 +300,10 @@ MinimumResource.prototype.canUpgrade = function(){
       else if(gamePage.diplomacyTab.racePanels[1].tradeBtn.hasResources()){
 
         //Store a reference to the button so it doesn't get GC'd.
-        window.tradeButtonReference = gamePage.diplomacyTab.racePanels[1].tradeBtn.enabled;
-        gamePage.diplomacyTab.racePanels[1].tradeBtn.handler()
-        gamePage.diplomacyTab.racePanels[1].tradeBtn.payPrice();
-        if (gamePage.diplomacyTab.racePanels[1].tradeBtn.priceRatio){
-          gamePage.diplomacyTab.racePanels[1].tradeBtn.adjustPrice(gamePage.diplomacyTab.racePanels[1].tradeBtn.priceRatio);
-        }
-        gamePage.diplomacyTab.racePanels[1].tradeBtn.update();
+        debugger;
+        gamePage.diplomacyTab.racePanels[1].tradeBtn.buttonContent.click()
+
+undefined
       }
     }
   }
