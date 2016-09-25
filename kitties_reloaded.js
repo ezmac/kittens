@@ -82,7 +82,6 @@ Resource.prototype = {
   // lol jquery
   autoCraft: function (resource, crafted_resource){
       max = $($(".resTable tr td:contains("+crafted_resource+":)").last().parent().find('td').get(2)).text();
-      //debugger;
       if(max.indexOf("+")>-1){
         num=(this.kParse(max.substr(1)))/2;
       }
@@ -176,7 +175,7 @@ function MinimumResource(){
 }
 MinimumResource.prototype = Object.create(StandardResource.prototype);
 MinimumResource.prototype.canUpgrade = function(){
-  if (this.current(this.name)>this.minimum && this.enabled){
+  if (this.current(this.name)>this.limit&& this.enabled){
     return true;
   }
 }
@@ -227,13 +226,14 @@ MinimumResource.prototype.canUpgrade = function(){
     this.resources.push(new MinimumResource({
       name: 'furs',
       crafted_resource:"parchment",
-      minimum:3000
+      limit:5000,
+        limitName: "furs kept"
     }));
     this.resources.push(new ConditionalResource({
       name: 'parchment',
       crafted_resource:"manuscript",
       frequency: 1000,
-      limit: 100,
+      limit: 3000,
       limitName: 'parchment kept',
       conditions:[
         function(){return this.current('parchment')>this.limit;},
@@ -245,7 +245,7 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'manuscript',
       crafted_resource:"compedium",
       frequency: 2500,
-      limit:100,
+      limit:500,
       limitName: 'manuscripts kept',
       conditions:[
         function(){return this.current('manuscript')> this.limit ;},
@@ -256,7 +256,7 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'compedium',
       crafted_resource:"blueprint",
       frequency: 2500,
-      limit:2000,
+      limit:5000,
       limitName: 'compendium kept',
       conditions:[
         function(){return this.current('compendium')> this.limit ;},
@@ -267,12 +267,16 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'titanium',
       crafted_resource:"alloy",
       frequency: 2500,
-      limit:3000,
+      limit:5000,
       limitName: 'steel kept',
       conditions:[
         function(){return this.withinPercentMax('titanium',5);},
         function(){return this.current('steel')> this.limit ;}
       ]
+    }));
+    this.resources.push(new StandardResource({
+      name: 'oil',
+      crafted_resource:"kerosene"
     }));
     this.resources.forEach(function(r){
       return r.initialize();
@@ -294,14 +298,16 @@ MinimumResource.prototype.canUpgrade = function(){
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
   window.autoTrade = function (){
     if (Resource.prototype.withinPercentMax('gold',1)){
-      if (Resource.prototype.withinPercentMax('catnip',90)) {
-        gamePage.craft('wood',100);
+      if (Resource.prototype.withinPercentMax('coal',10)) {
+        gamePage.craft('steel',7);
       }
-      else if(gamePage.diplomacyTab.racePanels[1].tradeBtn.hasResources()){
+      if (Resource.prototype.current('scaffold')<50) {
+        gamePage.craft('scaffold',100);
+      }
+      else if(gamePage.diplomacyTab.racePanels[5].tradeBtn.hasResources()){
 
         //Store a reference to the button so it doesn't get GC'd.
-        debugger;
-        gamePage.diplomacyTab.racePanels[1].tradeBtn.buttonContent.click()
+        gamePage.diplomacyTab.racePanels[5].tradeBtn.buttonContent.click()
 
 undefined
       }
