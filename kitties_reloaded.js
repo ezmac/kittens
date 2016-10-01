@@ -311,7 +311,7 @@ MinimumResource.prototype.canUpgrade = function(){
         gamePage.craft('steel',7);
       }
       if (Resource.prototype.current('scaffold')<50) {
-        if (Resource.prototype.current('wood')>17500) {
+        if (Resource.prototype.withinPercentMax('wood',10) && Resource.prototype.current('wood')>17500) {
           gamePage.craft('beam',100);
         }
         if (Resource.prototype.current('beam')>10000) {
