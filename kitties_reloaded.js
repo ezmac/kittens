@@ -320,7 +320,6 @@ MinimumResource.prototype.canUpgrade = function(){
       }
       else if(spiders.tradeBtn.hasResources()) {
 
-        debugger;
 
         // game disables tradebtn when the tab is inactive.
         spiders.tradeBtn.enabled=true;
