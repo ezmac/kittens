@@ -298,10 +298,10 @@ MinimumResource.prototype.canUpgrade = function(){
   $('.tab')[0].click();
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
   window.autoFestival = function (){
-    if(game.getTab('village').festivalBtn.enabled)
+    if(game.getTab('village').festivalBtn.enabled && game.calendar.festivalDays==0)
       game.getTab('village').festivalBtn.buttonContent.click();
   }
-  autoFestivalInterval = setInterval(autoFestival,2000);
+  autoFestivalInterval = setInterval(autoFestival,100000);
   window.autoTrade = function (){
     spiders = gamePage.diplomacyTab.racePanels.filter(function(panel){return panel.race.name == 'spiders'})[0];
     sharks = gamePage.diplomacyTab.racePanels.filter(function(panel){return panel.race.name == 'sharks'})[0];
