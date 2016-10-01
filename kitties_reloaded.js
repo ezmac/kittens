@@ -210,7 +210,7 @@ MinimumResource.prototype.canUpgrade = function(){
       frequency: 2500,
     }));
     this.resources.push(new CustomActionStandardResource({
-      name: 'catpower',
+      name: 'manpower',
       action:function(){
         $("#fastHuntContainer a").click();
       }
