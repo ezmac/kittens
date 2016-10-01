@@ -294,9 +294,14 @@ MinimumResource.prototype.canUpgrade = function(){
 //this was copy pasta'd from a previous version
 //  it was hard to convert and I got lazy.
   $('.tabsContainer :contains(Trade)')[0].click();
-  $('.tabsContainer')[1].click();
+  $('.tabsContainer .tab')[1].click();
   $('.tab')[0].click();
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
+  window.autoFestival = function (){
+    if(game.getTab('village').festivalBtn.enabled)
+      game.getTab('village').festivalBtn.buttonContent.click();
+  }
+  autoFestivalInterval = setInterval(autoFestival,2000);
   window.autoTrade = function (){
     spiders = gamePage.diplomacyTab.racePanels.filter(function(panel){return panel.race.name == 'spiders'})[0];
     sharks = gamePage.diplomacyTab.racePanels.filter(function(panel){return panel.race.name == 'sharks'})[0];
