@@ -26,9 +26,7 @@ Resource.prototype = {
   limitName:'%',
   max: function(name){
     name=(typeof name == 'undefined') ? this.name: name;
-    max = $($(".resTable tr td:contains("+name+":)").parent().find('td').get(2)).text();
-    max = max.replace('/','');
-    return this.kParse(max);
+    return game.resPool.get(name).maxValue;
   },
   upgrade: function(){
     console.error("this should be overridden");
@@ -38,7 +36,7 @@ Resource.prototype = {
   },
   current: function(name){
     name=(typeof name == 'undefined') ? this.name: name;
-    return this.kParse($($(".resTable tr td:contains("+name+":)").parent().find('td').get(1)).text());
+    return game.resPool.get(name).value;
   },
   // the dumbest way of finding limit/current/anything from the left table.
   kParse: function(input){
@@ -295,25 +293,44 @@ MinimumResource.prototype.canUpgrade = function(){
     */
 //this was copy pasta'd from a previous version
 //  it was hard to convert and I got lazy.
+  $('.tabsContainer :contains(Trade)')[0].click();
+  $('.tabsContainer')[1].click();
+  $('.tab')[0].click();
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
   window.autoTrade = function (){
+    spiders = gamePage.diplomacyTab.racePanels.filter(function(panel){return panel.race.name == 'spiders'})[0];
+    sharks = gamePage.diplomacyTab.racePanels.filter(function(panel){return panel.race.name == 'sharks'})[0];
+
     if (Resource.prototype.withinPercentMax('gold',1)){
       if (Resource.prototype.withinPercentMax('coal',10)) {
         gamePage.craft('steel',7);
       }
       if (Resource.prototype.current('scaffold')<50) {
-        gamePage.craft('scaffold',100);
+        if (Resource.prototype.current('wood')>17500) {
+          gamePage.craft('beam',100);
+        }
+        if (Resource.prototype.current('beam')>10000) {
+          gamePage.craft('scaffold',100);
+        }
       }
-      else if(gamePage.diplomacyTab.racePanels[5].tradeBtn.hasResources()){
+      else if(spiders.tradeBtn.hasResources()) {
 
-        //Store a reference to the button so it doesn't get GC'd.
-        gamePage.diplomacyTab.racePanels[5].tradeBtn.buttonContent.click()
+        debugger;
 
-undefined
+        // game disables tradebtn when the tab is inactive.
+        spiders.tradeBtn.enabled=true;
+        spiders.tradeBtn.onClick();
+
+      }
+      else {
+        // game disables tradebtn when the tab is inactive.
+        sharks.tradeBtn.enabled=true;
+        sharks.tradeBtn.onClick();
+
       }
     }
   }
-  autoTradeInterval = setInterval(autoTrade,200);
+  autoTradeInterval = setInterval(autoTrade,2000);
 
   var autoAstroEvent = function(){
     //console.log($("#rightColumn"));
