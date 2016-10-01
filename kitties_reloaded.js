@@ -293,8 +293,10 @@ MinimumResource.prototype.canUpgrade = function(){
     */
 //this was copy pasta'd from a previous version
 //  it was hard to convert and I got lazy.
-  $('.tabsContainer :contains(Trade)')[0].click();
-  $('.tabsContainer .tab')[1].click();
+  if($('.tabsContainer :contains(Trade)').length)
+      $('.tabsContainer :contains(Trade)')[0].click();
+  if($('.tabsContainer .tab').length>1)
+    $('.tabsContainer .tab')[1].click();
   $('.tab')[0].click();
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
   window.autoFestival = function (){
