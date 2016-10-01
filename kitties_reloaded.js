@@ -254,7 +254,7 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'compedium',
       crafted_resource:"blueprint",
       frequency: 2500,
-      limit:5000,
+      limit:10000,
       limitName: 'compendium kept',
       conditions:[
         function(){return this.current('compendium')> this.limit ;},
@@ -265,7 +265,7 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'titanium',
       crafted_resource:"alloy",
       frequency: 2500,
-      limit:5000,
+      limit:10000,
       limitName: 'steel kept',
       conditions:[
         function(){return this.withinPercentMax('titanium',5);},
