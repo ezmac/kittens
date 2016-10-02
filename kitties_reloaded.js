@@ -276,6 +276,10 @@ MinimumResource.prototype.canUpgrade = function(){
       name: 'oil',
       crafted_resource:"kerosene"
     }));
+    this.resources.push(new StandardResource({
+      name: 'uranium',
+      crafted_resource:"thorium"
+    }));
     this.resources.forEach(function(r){
       return r.initialize();
     });
@@ -293,14 +297,19 @@ MinimumResource.prototype.canUpgrade = function(){
     */
 //this was copy pasta'd from a previous version
 //  it was hard to convert and I got lazy.
+    function refreshBtns(){
   if($('.tabsContainer :contains(Trade)').length)
       $('.tabsContainer :contains(Trade)')[0].click();
   if($('.tabsContainer .tab').length>1)
     $('.tabsContainer .tab')[1].click();
   $('.tab')[0].click();
+    }
+refreshBtns();
+setInterval(refreshBtns, 3*60*60*1000);
   setInterval(function () { $('span:contains(Gather catnip)').click() }, 1);
   window.autoFestival = function (){
-    if(game.getTab('village').festivalBtn.enabled && game.calendar.festivalDays==0)
+    if(  game.calendar.festivalDays==0)
+      game.getTab('village').festivalBtn.enabled=true;
       game.getTab('village').festivalBtn.buttonContent.click();
   }
   autoFestivalInterval = setInterval(autoFestival,100000);
@@ -313,11 +322,11 @@ MinimumResource.prototype.canUpgrade = function(){
         gamePage.craft('steel',7);
       }
       if (Resource.prototype.current('scaffold')<50) {
-        if (Resource.prototype.withinPercentMax('wood',10) && Resource.prototype.current('wood')>17500) {
+        if (Resource.prototype.withinPercentMax('wood',20) && Resource.prototype.current('wood')>17500) {
           gamePage.craft('beam',100);
         }
-        if (Resource.prototype.current('beam')>10000) {
-          gamePage.craft('scaffold',100);
+        if (Resource.prototype.current('beam')>1000) {
+          gamePage.craft('scaffold',50);
         }
       }
       else if(spiders.tradeBtn.hasResources()) {
