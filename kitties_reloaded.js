@@ -325,11 +325,11 @@ setInterval(refreshBtns, 3*60*60*1000);
         if (Resource.prototype.withinPercentMax('wood',20) && Resource.prototype.current('wood')>17500) {
           gamePage.craft('beam',100);
         }
-        if (Resource.prototype.current('beam')>1000) {
+        if (Resource.prototype.current('beam')>2500) {
           gamePage.craft('scaffold',50);
         }
       }
-      else if(spiders.tradeBtn.hasResources()) {
+      if(spiders.tradeBtn.hasResources()) {
 
 
         // game disables tradebtn when the tab is inactive.
