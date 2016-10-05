@@ -360,7 +360,7 @@ setInterval(refreshBtns, 3*60*60*1000);
 $('body').append("<div id=\"kittehAI\" style=\"width:100%;position:fixed;bottom:0px;height:200px; \">")
 
 window.k.resources.forEach(function(r){
-  var resource = $("<div class='resource'><label>" + r.name + "</label><input checked data-property='enabled' type='checkbox'/></div>");
+  var resource = $("<div class='resource'><label>" + r.name + "</label><input checked data-property='enabled' style='display:inline-block' type='checkbox'/></div>");
   boundFunction = r.toggleEnabled.bind(r);
   resource.find('[data-property=\'enabled\']').on('click', boundFunction);
   resource.append(r.getControls());
